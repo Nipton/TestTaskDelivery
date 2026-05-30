@@ -1,12 +1,11 @@
-﻿@model AdminPageHeaderViewModel
+﻿@model PageHeaderViewModel
 
-<div class="row pt-4 mb-5 align-items-center">
-    <div class="col-6">
-        <h2 class="display-6 text-info border-start border-info border-4 ps-3">@Model.Title</h2>
-    </div>
-    <div class="col-6 text-end">
-        <a class="btn btn-primary" asp-controller="@Model.Controller" asp-action="Create">+ Добавить</a>
-    </div>
+<div class="d-flex justify-content-between align-items-center pt-4 mb-5">
+    <h2 class="display-6 text-info border-start border-info border-4 ps-3 mb-0">
+        @Model.Title
+    </h2>
+
+    <a class="btn btn-primary" asp-controller="@Model.Controller" asp-action="Create">
+        + Добавить
+    </a>
 </div>
-
-

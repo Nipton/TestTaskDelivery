@@ -1,9 +1,56 @@
 ﻿@{
     ViewData["Title"] = "Заказы";
+    int counter = 1;
 }
-@model OrderResponse
+@model IEnumerable<OrderResponse>
 
-<div class="container-fluid p-4">
-    <partial name="_PageHeader" model='new AdminPageHeaderViewModel{ Title = "Заказы", Controller = "Orders" }' />
+<partial name="_PageHeader" model='new PageHeaderViewModel{ Title = "Заказы", Controller = "Orders" }' />
 
-</div>
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (Model.Any())
+{
+    <div class="table-container">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Номер заказа</th>
+                    <th>Город отправителя</th>
+                    <th>Адрес отправителя</th>
+                    <th>Город получателя</th>
+                    <th>Адрес получателя</th>
+                    <th>Вес груза</th>
+                    <th>Дата забора груза</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td width="60px">@(counter++)</td>
+                        <td>@order.OrderNumber</td>
+                        <td>@order.SenderCityName</td>
+                        <td>@order.SenderAddress</td>
+                        <td>@order.ReceiverCityName</td>
+                        <td>@order.ReceiverAddress</td>
+                        <td>@order.Weight.ToString("0.##")</td>
+                        <td>@order.PickupDate.ToString("dd.MM.yyyy HH:mm")</td>
+                        <td></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <p>Нет заказов</p>
+}

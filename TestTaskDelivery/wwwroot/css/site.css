@@ -38,3 +38,29 @@
 .btn-toggle-nav a:focus {
     background-color: var(--bs-tertiary-bg);
 }
+.main-content {
+    min-width: 0;
+}
+.table-container {
+    overflow-x: auto;
+}
+.ts-wrapper.focus .ts-control {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+.ts-control,
+.ts-control input,
+.ts-control .item,
+.ts-dropdown .option {
+    font-size: 1.0rem !important;
+}
+.ts-control {
+    display: flex;
+    align-items: center;
+}
+.field-max-width {
+    max-width: 800px;
+}
+.label-max-width {
+    width: 180px;
+}

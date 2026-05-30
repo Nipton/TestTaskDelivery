@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TestTaskDelivery.Data;
+using TestTaskDelivery.Interfaces;
+using TestTaskDelivery.Services;
 
 namespace TestTaskDelivery
 {
@@ -11,6 +13,7 @@ namespace TestTaskDelivery
 
             // Add services to the container.
             builder.Services.AddDbContext<ApplicationContext>(option => option.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<IOrderService, OrderService>();
 
             builder.Services.AddControllersWithViews();
 
