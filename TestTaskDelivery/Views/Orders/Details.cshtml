@@ -1,0 +1,44 @@
+﻿@model OrderResponse
+@{
+    ViewData["Title"] = $"Заказ №{Model.OrderNumber}";
+}
+<partial name="_PageFormHeader" model=@ViewData["Title"] />
+
+
+
+<div class="card">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0">Информация о заказе</h5>
+    </div>
+    <div class="card-body">
+        <h5 class="text-info pb-2 mb-3">Отправитель</h5>
+
+        <partial name="_FieldDisplay" model='new FieldDisplayViewModel {Label = "Город", Value = Model.SenderCityName}' />
+
+        <partial name="_FieldDisplay" model='new FieldDisplayViewModel { Label = "Адрес", Value = Model.SenderAddress }' />
+
+        <hr />
+
+        <h5 class="text-info pb-2 mb-3">Получатель</h5>
+
+        <partial name="_FieldDisplay" model='new FieldDisplayViewModel { Label = "Город", Value = Model.ReceiverCityName }' />
+
+        <partial name="_FieldDisplay" model='new FieldDisplayViewModel { Label = "Адрес", Value = Model.ReceiverAddress }' />
+
+        <hr />
+
+        <partial name="_FieldDisplay" model='new FieldDisplayViewModel { Label = "Вес груза", Value = $"{Model.Weight:0.##} кг" }' />
+
+        <partial name="_FieldDisplay" model='new FieldDisplayViewModel { Label = "Дата забора", Value = Model.PickupDate.ToString("dd.MM.yyyy") }' />
+
+        <partial name="_FieldDisplay" model='new FieldDisplayViewModel { Label = "Номер заказа", Value = Model.OrderNumber }' />
+    </div>
+</div>
+<div class="d-flex justify-content-start gap-2 mt-4 pt-3 border-top">
+    <a asp-action="Index" class="btn btn-outline-secondary" style="width: 150px;">
+        Назад
+    </a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary" style="width: 150px;">
+        Редактировать
+    </a>
+</div>

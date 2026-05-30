@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using TestTaskDelivery.DTOs;
 using TestTaskDelivery.Interfaces;
 using TestTaskDelivery.Models;
-using TestTaskDelivery.DTOs;
 
 namespace TestTaskDelivery.Controllers
 {
@@ -24,15 +25,45 @@ namespace TestTaskDelivery.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            return View("Upsert", new OrderRequest());
+            return View("Upsert", new OrderRequest() { PickupDate = DateTime.Today});
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(OrderRequest orderRequest)
         {
-            TempData["Success"] = "Заказ №123 создан";
+            var order = await _orderService.CreateOrderAsync(orderRequest);
+            TempData["Success"] = $"Заказ №{order.OrderNumber} создан";
             return RedirectToAction(nameof(Index));
+        }
+        [HttpGet]
+        public async Task<ActionResult> Details(int id)
+        {
+            var order = await _orderService.GetOrderResponseAsync(id);
+            return View(order);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Edit(int id) 
+        {
+            var order = await _orderService.GetOrderRequestAsync(id);
+            if (order == null)
+                return NotFound();
+            var senderCity = await _orderService.GetCityAsync(order.SenderCityId);
+            var receiverCity = await _orderService.GetCityAsync(order.ReceiverCityId);
+            ViewBag.SelectedSenderCity = senderCity?.Name ?? "";
+            ViewBag.SelectedReceiverCity = receiverCity?.Name ?? "";
+            return View("Upsert", order);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(OrderRequest orderRequest)
+        {
+            var result = await _orderService.UpdateOrderAsync(orderRequest);
+            if (!result.Success)
+                return NotFound();
+
+            return RedirectToAction(nameof(Details),new { id = result.Id});
         }
 
         [HttpGet("/api/cities/search")]
@@ -40,10 +71,6 @@ namespace TestTaskDelivery.Controllers
         {
             var cities = await _orderService.GetCitiesAsync(term);
             return Json(cities.Select(c => new {c.Id, c.Name}));
-        }
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

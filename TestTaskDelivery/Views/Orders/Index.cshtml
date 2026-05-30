@@ -4,7 +4,7 @@
 }
 @model IEnumerable<OrderResponse>
 
-<partial name="_PageHeader" model='new PageHeaderViewModel{ Title = "Заказы", Controller = "Orders" }' />
+<partial name="_PageHeader" model='new PageHeaderViewModel { Title = ViewData["Title"]?.ToString() ?? "", Controller = "Orders" }' />
 
 @if (TempData["Success"] != null)
 {
@@ -36,14 +36,19 @@
                 {
                     <tr>
                         <td width="60px">@(counter++)</td>
-                        <td>@order.OrderNumber</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@order.Id" class="text-info me-2">@order.OrderNumber</a>
+                        </td>
                         <td>@order.SenderCityName</td>
                         <td>@order.SenderAddress</td>
                         <td>@order.ReceiverCityName</td>
                         <td>@order.ReceiverAddress</td>
                         <td>@order.Weight.ToString("0.##")</td>
                         <td>@order.PickupDate.ToString("dd.MM.yyyy HH:mm")</td>
-                        <td></td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@order.Id" class="text-info me-2"><i class="bi bi-eye fs-5"></i></a>
+                            <a asp-action="Edit" asp-route-id="@order.Id" class="text-info me-2"><i class="bi bi-pen fs-5"></i></a>
+                        </td>
                     </tr>
                 }
             </tbody>

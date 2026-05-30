@@ -14,7 +14,7 @@ namespace TestTaskDelivery.DTOs
         [Display(Name = "Адрес получателя")]
         public string ReceiverAddress { get; set; } = string.Empty;
         [Display(Name = "Вес груза")]
-        public decimal? Weight { get; set; }
+        public decimal Weight { get; set; }
         [Display(Name = "Дата забора груза")]
         public DateTime PickupDate { get; set; }
     }
