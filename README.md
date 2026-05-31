@@ -5,7 +5,7 @@
 ## Запуск проекта
 
 1. Клонировать репозиторий: git clone https://github.com/Nipton/TestTaskDelivery.git
-2. Перейти в папку проекта: cd TestTaskDelivery
+2. Перейти в папку проекта: cd TestTaskDelivery/TestTaskDelivery
 3. Запустить приложение: dotnet run
 4. После запуска откройте адрес, указанный в консоли
 
