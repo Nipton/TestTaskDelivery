@@ -35,3 +35,18 @@ function initializeCitySelect(selector, apiUrl) {
         }
     });
 }
+
+function fixEmptyCityFields() {
+    const form = document.querySelector('form');
+    const sender = document.querySelector('#SenderCitySelect');
+    const receiver = document.querySelector('#ReceiverCitySelect');
+
+    if (!sender && !receiver) return;
+
+    if (form) {
+        form.addEventListener('submit', function () {
+            if (sender && sender.value === '') sender.value = '0';
+            if (receiver && receiver.value === '') receiver.value = '0';
+        });
+    }
+}

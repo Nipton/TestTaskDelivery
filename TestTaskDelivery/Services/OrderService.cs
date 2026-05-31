@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using TestTaskDelivery.Data;
 using TestTaskDelivery.DTOs;
 using TestTaskDelivery.Interfaces;
@@ -34,7 +35,9 @@ namespace TestTaskDelivery.Services
 
         public async Task<OrderResult> CreateOrderAsync(OrderRequest orderRequest)
         {
-            ArgumentNullException.ThrowIfNull(orderRequest);
+            var validationResult = await ValidateOrder(orderRequest);
+            if (validationResult != null)
+                return new OrderResult { Success = false, ErrorMessage = validationResult };
             Order order = new Order
             {
                 OrderNumber = GenerateOrderNumber(),
@@ -53,10 +56,12 @@ namespace TestTaskDelivery.Services
 
         public async Task<OrderResult> UpdateOrderAsync(OrderRequest orderRequest)
         {
-            ArgumentNullException.ThrowIfNull(orderRequest);
+            var validationResult = await ValidateOrder(orderRequest);
+            if (validationResult != null)
+                return new OrderResult { Success = false, ErrorMessage = validationResult };
             var order = await _context.Orders.FindAsync(orderRequest.Id);
             if (order == null)
-                return new OrderResult { Success = false, ErrorMessage = "Заказ не найден" };
+                return new OrderResult { Success = false, ErrorMessage = "Заказ не найден. Обновите страницу." };
             order.SenderCityId = orderRequest.SenderCityId;
             order.SenderAddress = orderRequest.SenderAddress;
             order.ReceiverCityId = orderRequest.ReceiverCityId;
@@ -97,7 +102,7 @@ namespace TestTaskDelivery.Services
 
         public async Task<OrderRequest?> GetOrderRequestAsync(int id)
         {
-            var orederRequest = await _context.Orders
+            var orderRequest = await _context.Orders
                 .AsNoTracking()
                 .Where(x => x.Id == id)
                 .Select(o => new OrderRequest
@@ -111,7 +116,7 @@ namespace TestTaskDelivery.Services
                     PickupDate = o.PickupDate
                 })
                 .FirstOrDefaultAsync();
-            return orederRequest; 
+            return orderRequest; 
         }
 
         public async Task<List<City>> GetCitiesAsync(string term)
@@ -131,6 +136,26 @@ namespace TestTaskDelivery.Services
         public async Task<City?> GetCityAsync(int id)
         {
             return await _context.Cities.FindAsync(id);
+        }
+
+        private async Task<string?> ValidateOrder(OrderRequest orderRequest)
+        {
+            ArgumentNullException.ThrowIfNull(orderRequest);
+            if (string.IsNullOrWhiteSpace(orderRequest.SenderAddress) || string.IsNullOrWhiteSpace(orderRequest.ReceiverAddress))
+                return "Адрес обязателен к заполнению.";
+            if (orderRequest.Weight <= 0)
+                return "Вес должен быть больше 0";
+            if (orderRequest.PickupDate < DateTime.Today)
+                return "Дата забора не может быть в прошлом";
+
+            var senderCity = await GetCityAsync(orderRequest.SenderCityId);
+            if (senderCity == null)
+                return "Город отправителя обязателен к заполнению.";
+            var receiverCity = await GetCityAsync(orderRequest.ReceiverCityId);
+            if (receiverCity == null)
+                return "Город получателя обязателен к заполнению.";
+
+            return null;
         }
     }
 }

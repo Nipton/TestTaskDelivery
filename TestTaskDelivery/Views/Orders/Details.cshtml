@@ -4,7 +4,13 @@
 }
 <partial name="_PageFormHeader" model=@ViewData["Title"] />
 
-
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
 
 <div class="card">
     <div class="card-header bg-info text-white">
